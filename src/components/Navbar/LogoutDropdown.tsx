@@ -24,8 +24,7 @@ export default function LogoutDropdown({ isMobileScreen }: Props) {
   const session = useSession();
   const userFirebaseId = session.data?.userFirebaseId ?? '';
 
-  const { data: userResponse, isLoading } =
-    useGetUserDetailsQuery(userFirebaseId);
+  const { data: userResponse, isLoading } = useGetUserDetailsQuery();
   const userDetails = userResponse?.data.userDetails;
 
   const ArrowIcon = isOpen ? IoIosArrowUp : IoIosArrowDown;
