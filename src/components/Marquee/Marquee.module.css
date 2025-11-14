@@ -1,0 +1,63 @@
+.marquee {
+    padding: 40px;
+    max-width: 1200px;
+    display: flex;
+    margin: 0 auto;
+    margin-top: 30px;
+    flex-direction: row-reverse;
+    align-items: center;
+
+}
+
+.left > h1 {
+    color: black;
+}
+
+.right {
+    width: 50%;
+}
+
+.left {
+    width: 50%;
+}
+.image {
+    position: relative;
+    overflow: hidden;
+
+}
+
+.attribution {
+    display: flex;
+}
+
+.card {
+    width: 40%;
+    padding-top: 10px;
+}
+
+.listings {
+    margin-top: 70px;
+    padding: 60px;
+}
+
+.listings > h2 {
+    color: gray;
+    font-size: 25px;
+    padding-bottom: 25px;
+}
+
+.parent {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+
+.curated {
+    height: 450px;
+    position: relative;
+    overflow: hidden;
+    width: 340px;
+    border-radius: 20px;
+    background: black;
+}
