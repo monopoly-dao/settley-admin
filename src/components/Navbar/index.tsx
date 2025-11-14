@@ -78,12 +78,7 @@ const Navbar = () => {
 
   const userFirebaseId = session.data?.userFirebaseId ?? '';
 
-  const { data: userResponse, isLoading } = useGetUserDetailsQuery(
-    userFirebaseId,
-    {
-      skip: !isLoggedIn,
-    }
-  );
+  const { data: userResponse, isLoading } = useGetUserDetailsQuery();
   const userDetails = userResponse?.data.userDetails;
   const isProfileComplete =
     userDetails?.username &&
