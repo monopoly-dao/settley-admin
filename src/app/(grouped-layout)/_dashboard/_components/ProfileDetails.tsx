@@ -12,11 +12,9 @@ type Props = {
 };
 
 export default function ProfileDetails({ setProfileToEdit }: Props) {
-  const session = useSession();
-  const userFirebaseId = session.data?.userFirebaseId ?? '';
   // const email = session.data?.email ?? '';
 
-  const { data, isLoading } = useGetUserDetailsQuery(userFirebaseId);
+  const { data, isLoading } = useGetUserDetailsQuery();
   const userDetails = data?.data;
 
   return (
