@@ -5,7 +5,7 @@ import { FiKey } from 'react-icons/fi';
 import { GoHome } from 'react-icons/go';
 import { IoWalletOutline } from 'react-icons/io5';
 
-import { useGetWalletStatsQuery } from '@/api/profile';
+// import { useGetWalletStatsQuery } from '@/api/profile';
 
 import AssetsSection from './_components/AssetsSection';
 import DashboardCard from './_components/DashboardCard';
@@ -15,15 +15,15 @@ export default function Page() {
   const session = useSession();
   const userFirebaseId = session.data?.userFirebaseId ?? '';
 
-  const { data: walletStatsResponse, isLoading } =
-    useGetWalletStatsQuery(userFirebaseId);
-  const walletStats = walletStatsResponse?.data;
+  // const { data: walletStatsResponse, isLoading } =
+  //   useGetWalletStatsQuery(userFirebaseId);
+  // const walletStats = walletStatsResponse?.data;
 
   return (
     <div>
       <h2 className='text-3xl mt-12 font-inter mb-2'>Dashboard</h2>
 
-      <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6'>
+      {/* <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6'>
         <DashboardCard
           title='Total Portfolio Value'
           amount={walletStats?.totalValue}
@@ -54,7 +54,7 @@ export default function Page() {
           <div className='mt-20'>
             <ExploreOpportunities />
           </div>
-        )}
+        )} */}
 
       <div className='mt-20'>
         <AssetsSection userFirebaseId={userFirebaseId} />
