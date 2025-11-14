@@ -8,10 +8,7 @@ import { MdContentCopy } from 'react-icons/md';
 import LoadingText from '@/components/LoadingText';
 import TableContainer from '@/components/table';
 
-import {
-  useGetUserDetailsQuery,
-  useGetUserTransactionsQuery,
-} from '@/api/profile';
+import { useGetUserDetailsQuery } from '@/api/profile';
 import { handleErrors } from '@/utils/error';
 
 import TransactionTableItem from '../_components/TransactionTableItem';
@@ -33,21 +30,21 @@ export default function Page() {
   const userFirebaseId = session.data?.userFirebaseId ?? '';
 
   const { data: userDetailsResponse, isLoading: isUserLoading } =
-    useGetUserDetailsQuery(userFirebaseId);
+    useGetUserDetailsQuery();
   const userDetails = userDetailsResponse?.data;
 
-  const {
-    data: userTransactionsResponse,
-    isLoading,
-    isFetching,
-  } = useGetUserTransactionsQuery({
-    userFirebaseId,
-    page,
-    limit: 10,
-    sort: { created_at: 'desc' },
-  });
+  // const {
+  //   data: userTransactionsResponse,
+  //   isLoading,
+  //   isFetching,
+  // } = useGetUserTransactionsQuery({
+  //   userFirebaseId,
+  //   page,
+  //   limit: 10,
+  //   sort: { created_at: 'desc' },
+  // });
 
-  const transactions = userTransactionsResponse?.data;
+  // const transactions = userTransactionsResponse?.data;
 
   async function copyWalletAddress() {
     try {
@@ -79,7 +76,7 @@ export default function Page() {
         </p>
       </div>
 
-      {transactions?.length === 0 && `You don't have any transactions yet`}
+      {/* {transactions?.length === 0 && `You don't have any transactions yet`}
       <TableContainer
         headers={headers}
         isLoading={isLoading || isFetching}
@@ -91,7 +88,7 @@ export default function Page() {
             transaction={transaction}
           />
         ))}
-      </TableContainer>
+      </TableContainer> */}
     </div>
   );
 }
