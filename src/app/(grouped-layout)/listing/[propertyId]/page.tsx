@@ -24,7 +24,7 @@ import YouMightAlsoLike from '../_components/YouMightAlsoLike';
 export default function Page() {
   const { propertyId } = useParams();
   const {
-    data: property,
+    data: res,
     error,
     isLoading,
   } = useGetPropertyQuery(propertyId as string);
@@ -32,6 +32,8 @@ export default function Page() {
   const session = useSession();
   const userFirebaseId = session.data?.userFirebaseId ?? '';
   const { isOpen: isBuyOpen, open: openBuy, close: closeBuy } = useDisclosure();
+
+  const property = res?.data;
 
   if (error) handleErrors(error);
 
