@@ -1,3 +1,5 @@
+import { Property } from '../properties/propertiesApiTypes';
+
 export type UserResponse = {
   _id: string;
   userFirebaseId: string;
@@ -12,26 +14,30 @@ export type UserResponse = {
     walletAddress: string;
   };
   role: string;
-  ownership: {
+  holdings: {
+    property: Property;
+    units: string;
     _id: string;
+  }[];
+  listings: {
+    property: Property;
+    pricePerUnit: string;
+    units: string;
+    _id: string;
+  }[];
+  boughtListings: {
+    property: Property;
+    pricePerUnit: string;
+    units: string;
+    _id: string;
+  }[];
+  transactions: {
+    amount: { $numberDecimal: string };
+    created_at: string;
+    property: Property;
+    txHash: string;
+    type: 'bought';
     userFirebaseId: string;
-    holdings: {
-      property: string;
-      units: string;
-      _id: string;
-    }[];
-    __v: 7;
-    listedPositions: {
-      property: string;
-      pricePerUnit: string;
-      units: string;
-      _id: string;
-    }[];
-    boughtPositions: {
-      property: string;
-      pricePerUnit: string;
-      units: string;
-      _id: string;
-    }[];
-  };
+    _id: string;
+  }[];
 };

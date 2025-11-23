@@ -3,14 +3,14 @@
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 
+import Button from '@/components/buttons/Button';
 import { InputSearch } from '@/components/input';
 import { DataTable } from '@/components/ui';
 
 import { useGetUsersQuery } from '@/api/users/users-action.server';
+import { exportToExcel } from '@/utils/utils';
 
 import { usersColumns } from './_utils/usersColumns';
-import Button from '@/components/buttons/Button';
-import { exportToExcel } from '@/utils/utils';
 
 export default function Page() {
   const [pagination, setPagination] = useState({

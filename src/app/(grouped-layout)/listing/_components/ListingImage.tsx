@@ -5,21 +5,19 @@ import { useState } from 'react';
 
 import { cn } from '@/lib/utils';
 
-import LoadingSkeleton from '@/components/LoadingSkeleton';
-
 type Props = {
   src: string;
   alt: string;
 };
 
 export default function ListingImage({ src, alt }: Props) {
-  const [isImageFetching, setIsImageFetching] = useState(true);
+  const [_, setIsImageFetching] = useState(true);
 
   return (
     <>
-      {isImageFetching && (
+      {/* {isImageFetching && (
         <LoadingSkeleton containerClassName={cn('w-full h-full')} />
-      )}
+      )} */}
       <Image
         src={src}
         alt={alt}
@@ -27,7 +25,7 @@ export default function ListingImage({ src, alt }: Props) {
         height={200}
         quality={100}
         className={cn('w-full h-full object-cover', [
-          isImageFetching ? 'hidden' : 'block',
+          // isImageFetching ? 'hidden' : 'block',
         ])}
         unoptimized
         onLoad={() => {

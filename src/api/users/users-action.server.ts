@@ -1,7 +1,10 @@
 import { UsersEndpoints } from './users-constants.server';
 import { UserResponse } from './users-type.server';
 import { globalApi } from '..';
-import { PaginatedSuccessResponse } from '../../@types/appTypes';
+import {
+  INetworkSuccessResponse,
+  PaginatedSuccessResponse,
+} from '../../@types/appTypes';
 import { GET_METHOD } from '../../constants/appConstants';
 
 const usersApi = globalApi.injectEndpoints({
@@ -16,9 +19,20 @@ const usersApi = globalApi.injectEndpoints({
         method: GET_METHOD,
         params: payload,
       }),
-      providesTags: ['Properties'],
+      providesTags: ['Users'],
+    }),
+
+    getUser: build.query<
+      INetworkSuccessResponse<UserResponse>,
+      { userId: string }
+    >({
+      query: ({ userId }) => ({
+        url: UsersEndpoints.Get_User.replace(':userId', userId),
+        method: GET_METHOD,
+      }),
+      providesTags: (_r, _e, arg) => [{ type: 'Users', id: arg.userId }],
     }),
   }),
 });
 
-export const { useGetUsersQuery } = usersApi;
+export const { useGetUsersQuery, useGetUserQuery } = usersApi;

@@ -1,3 +1,5 @@
+import { UserResponse } from '../users/users-type.server';
+
 export type Property = {
   _id: string;
   contractAddress: string;
@@ -20,7 +22,7 @@ export type Property = {
     bed: string;
     bath: string;
     squareFt: string;
-    owners: string[];
+    owners: UserResponse[];
   };
 };
 
