@@ -1,11 +1,11 @@
-import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import * as XLSX from 'xlsx';
 
 export function formatAmount(
   amount: string | number | undefined,
   currency?: '₦' | '$' | string
 ) {
-  if (!amount) return undefined;
+  if (!amount && amount !== 0) return undefined;
 
   amount = amount.toString();
 
