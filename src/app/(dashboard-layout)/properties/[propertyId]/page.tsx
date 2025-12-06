@@ -35,7 +35,7 @@ import {
   propertyDocumentsColumns,
   propertyOwnersColumns,
 } from '../_utils/propertiesColumns';
-import { StatCard } from '../../dashboard/page';
+import { StatCard } from '../../_components/DashboardCards';
 
 export default function Page() {
   const { propertyId } = useParams();

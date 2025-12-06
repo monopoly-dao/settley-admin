@@ -1,12 +1,6 @@
 'use client';
 
-import {
-  Building,
-  DollarSign,
-  LucideIcon,
-  TrendingUp,
-  Users,
-} from 'lucide-react';
+import { Building, DollarSign, TrendingUp, Users } from 'lucide-react';
 import Link from 'next/link';
 
 import Skeleton from '@/components/Skeleton';
@@ -19,29 +13,7 @@ import {
 } from '@/api/users/users-action.server';
 import { formatAmount } from '@/utils/utils';
 
-type StatProps = {
-  title: string;
-  value: string;
-  subtext: string;
-  icon: LucideIcon;
-  color: string;
-};
-
-export const StatCard = ({ title, value, subtext, icon: Icon }: StatProps) => (
-  <div className='flex flex-col gap-6 py-6 bg-white rounded-xl shadow-sm transition-shadow duration-300 hover:shadow-lg border'>
-    <div className='flex items-center justify-between px-6'>
-      <p className='text-sm font-medium'>{title}</p>
-      <div className=''>
-        <Icon className='w-4 h-4' />
-      </div>
-    </div>
-
-    <div className='px-6'>
-      <p className='text-2xl font-bold'>{value}</p>
-      <p className='text-xs text-gray-400'>{subtext}</p>
-    </div>
-  </div>
-);
+import { StatCard } from '../_components/DashboardCards';
 
 type PropertyProps = {
   name: string;
@@ -126,28 +98,24 @@ export default function Page() {
       value: formatAmount(stats?.totalProperties) || '',
       subtext: 'active funding rounds',
       icon: Building,
-      color: 'bg-blue-500',
     },
     {
       title: 'Total Users',
       value: formatAmount(stats?.totalUsers) || '',
       subtext: '',
       icon: Users,
-      color: 'bg-green-500',
     },
     {
       title: 'Total Investment',
       value: formatAmount(stats?.totalInvestmentInDollars, '$') || '',
       subtext: 'Across all properties',
       icon: DollarSign,
-      color: 'bg-yellow-500',
     },
     {
       title: 'Active Users',
       value: formatAmount(stats?.totalActiveUsersWithInvestments) || '',
       subtext: 'Users with investments',
       icon: TrendingUp,
-      color: 'bg-red-500',
     },
   ];
 
