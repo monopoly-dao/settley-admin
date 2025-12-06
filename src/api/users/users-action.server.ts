@@ -1,5 +1,5 @@
 import { UsersEndpoints } from './users-constants.server';
-import { UserResponse } from './users-type.server';
+import { DashboardStatsResponse, UserResponse } from './users-type.server';
 import { globalApi } from '..';
 import {
   INetworkSuccessResponse,
@@ -10,6 +10,17 @@ import { GET_METHOD } from '../../constants/appConstants';
 const usersApi = globalApi.injectEndpoints({
   overrideExisting: true,
   endpoints: (build) => ({
+    getDashboardStats: build.query<
+      INetworkSuccessResponse<DashboardStatsResponse>,
+      void
+    >({
+      query: () => ({
+        url: UsersEndpoints.GetDashboardStats,
+        method: GET_METHOD,
+      }),
+      providesTags: ['Dashboard'],
+    }),
+
     getUsers: build.query<
       PaginatedSuccessResponse<UserResponse[]>,
       { page?: number; limit?: number; search?: string }
@@ -35,4 +46,5 @@ const usersApi = globalApi.injectEndpoints({
   }),
 });
 
-export const { useGetUsersQuery, useGetUserQuery } = usersApi;
+export const { useGetUsersQuery, useGetUserQuery, useGetDashboardStatsQuery } =
+  usersApi;

@@ -41,3 +41,10 @@ export type UserResponse = {
     _id: string;
   }[];
 };
+
+export type DashboardStatsResponse = {
+  totalProperties: number;
+  totalUsers: number;
+  totalInvestmentInDollars: number;
+  totalActiveUsersWithInvestments: number;
+};

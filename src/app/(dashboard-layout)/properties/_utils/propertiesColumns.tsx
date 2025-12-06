@@ -1,4 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table';
+import { Download, FileText } from 'lucide-react';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { IoIosArrowRoundForward } from 'react-icons/io';
@@ -79,9 +80,9 @@ export const propertiesColumns: ColumnDef<Property>[] = [
     header: '% Funded',
     cell: (info) => info.getValue(),
     accessorFn: (row) => (
-      <div className='w-[100px] bg-medium-grey rounded-[20px] h-[10px]'>
+      <div className='h-2 bg-gray-200 w-[96px] rounded-full overflow-hidden'>
         <div
-          className='h-[10px] rounded-[20px] bg-green-500'
+          className='h-full bg-navy rounded-full'
           style={{
             width: `${
               ((Number(row.propertyDetails.units) -
@@ -89,8 +90,18 @@ export const propertiesColumns: ColumnDef<Property>[] = [
                 Number(row.propertyDetails.units)) *
               100
             }%`,
-          }}
-        />
+          }} // Use 'sold' percentage as width
+          aria-valuenow={parseFloat(
+            `${
+              ((Number(row.propertyDetails.units) -
+                Number(row.propertyDetails.unitsLeft)) /
+                Number(row.propertyDetails.units)) *
+              100
+            }`
+          )}
+          aria-valuemin={0}
+          aria-valuemax={100}
+        ></div>
       </div>
     ),
   },
@@ -220,6 +231,38 @@ export const propertyOwnersColumns: ColumnDef<
       >
         View More
         <IoIosArrowRoundForward />
+      </Link>
+    ),
+  },
+];
+
+export const propertyDocumentsColumns: ColumnDef<{
+  name: string;
+  type: string;
+  url: string;
+}>[] = [
+  {
+    header: 'Document Name',
+    cell: (info) => info.getValue(),
+    accessorFn: (row) => (
+      <div className='flex items-center gap-2'>
+        <FileText className='w-4 h-4' />
+        {row.name}
+      </div>
+    ),
+  },
+
+  {
+    header: 'Type',
+    accessorKey: 'type',
+  },
+
+  {
+    header: 'Actions',
+    cell: (info) => info.getValue(),
+    accessorFn: (row) => (
+      <Link href={row.url} target='_blank'>
+        <Download className='w-4 h-4' />
       </Link>
     ),
   },

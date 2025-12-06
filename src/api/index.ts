@@ -107,6 +107,7 @@ export const globalApi = createApi({
     'DeedDetails',
     'CampaignPayments',
     'Users',
+    'Dashboard',
   ],
 });
 

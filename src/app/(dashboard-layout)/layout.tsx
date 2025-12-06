@@ -21,7 +21,7 @@ export default async function AuthenticatedLayout({
               <MobileSidebar />
             </div>
 
-            <div className='min-h-[100dvh] md:min-h-0 h-full md:h-screen px-[5%] lg:px-10 xl:px-20 py-6 w-full overflow-hidden bg-navy/5'>
+            <div className='min-h-[100dvh] md:min-h-0 h-full md:h-screen py-6 w-full overflow-hidden bg-white'>
               {children}
             </div>
 

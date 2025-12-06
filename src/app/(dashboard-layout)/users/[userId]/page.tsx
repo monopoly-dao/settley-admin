@@ -1,17 +1,23 @@
 'use client';
 
-import { Building2, Clock, DollarSign, Phone, Wallet } from 'lucide-react';
-import { useParams } from 'next/navigation';
+import { ArrowLeft, Copy, User, Wallet } from 'lucide-react';
+import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
+import toast from 'react-hot-toast';
+
+import { cn } from '@/lib/utils';
 
 import { DataTable, ErrorPlaceholder } from '@/components/ui';
 
 import { useGetUserQuery } from '@/api/users/users-action.server';
+import { handleErrors } from '@/utils/error';
 
 import {
   holdingsColumns,
   transactionsColumns,
 } from '../_utils/holdingsColumns';
+
+const views = ['Overview', 'Holdings & Portfolio', 'Transactions'];
 
 export default function Page() {
   const [pagination, setPagination] = useState({
@@ -19,6 +25,8 @@ export default function Page() {
     pageSize: 20,
   });
   const { userId } = useParams<{ userId: string }>();
+  const router = useRouter();
+  const [view, setView] = useState('Overview');
 
   const {
     data: res,
@@ -45,6 +53,17 @@ export default function Page() {
   //   const listings = user?.listings || [];
   const transactions = user?.transactions || [];
 
+  async function copyAddress() {
+    try {
+      await navigator.clipboard.writeText(
+        user?.userDetails.walletAddress || ''
+      );
+      toast.success('Address succesfully copied!');
+    } catch (e) {
+      handleErrors(e);
+    }
+  }
+
   if (isError)
     return (
       <ErrorPlaceholder
@@ -55,177 +74,156 @@ export default function Page() {
     );
 
   return (
-    <section className='h-full overflow-y-auto'>
+    <section className='h-full overflow-y-auto px-[5%] lg:px-10 xl:px-20'>
       <div className='max-w-7xl mx-auto space-y-6'>
         {/* Header Section */}
-        <div className='bg-white rounded-lg shadow-sm p-8'>
-          <div className='flex items-start gap-6'>
-            {/* <Image
-              src={user.userDetails.profileImage}
-              alt={`${user.firstName} ${user.lastName}`}
-              className='w-24 h-24 rounded-full border-4 border-gray-100'
-            /> */}
-            <div className='flex-1'>
-              <div className='flex items-center gap-3 mb-2'>
-                <h1 className='text-3xl font-bold text-gray-900'>
-                  {user?.firstName} {user?.lastName}
-                </h1>
-                {/* <span
-                  className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                    user?.userDetails.status
-                  )}`}
-                >
-                  {user?.userDetails.status}
-                </span> */}
-                {user?.role === 'admin' && (
-                  <span className='px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800'>
-                    Admin
-                  </span>
-                )}
-              </div>
-              <p className='text-lg text-gray-600 mb-4'>
-                @{user?.userDetails.username}
-              </p>
 
-              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                {user?.userDetails.phone && (
-                  <div className='flex items-center gap-2 text-gray-600'>
-                    <Phone className='w-4 h-4' />
-                    <span>{user?.userDetails.phone}</span>
-                  </div>
-                )}
-                {user?.userDetails.twitter && (
-                  <div className='flex items-center gap-2 text-gray-600'>
-                    <span className='font-medium'>Twitter:</span>
-                    <span>{user?.userDetails.twitter}</span>
-                  </div>
-                )}
-                <div className='flex items-center gap-2 text-gray-600'>
-                  <Wallet className='w-4 h-4' />
-                  <span className='font-mono text-sm'>
+        <div className='flex items-center gap-4'>
+          <button
+            onClick={() => router.back()}
+            className='w-8 h-8 rounded-[6px] border flex items-center justify-center'
+          >
+            <ArrowLeft className='w-4 h-4' />
+          </button>
+          <div>
+            <h1 className='font-bold text-2xl font-serif tracking-tight'>
+              {user?.firstName} {user?.lastName}
+            </h1>
+            <div className='flex items-center gap-2 text-sm mt-1 text-gray-500'>
+              <span>ID: {user?.userFirebaseId}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className='p-[3px] h-9 inline-flex w-fit items-center justify-center rounded-lg bg-[#F2F2F2] mb-6'>
+          {views.map((v) => (
+            <button
+              key={v}
+              onClick={() => setView(v)}
+              className={cn(
+                'rounded-[6px] border py-1 px-2 bg-transparent border-transparent text-sm font-medium hover:bg-white/50',
+                [view === v && 'bg-white border-white shadow-sm']
+              )}
+            >
+              {v}
+            </button>
+          ))}
+        </div>
+
+        {view === 'Overview' && (
+          <div className='grid gap-6 md:grid-cols-3'>
+            <div className='shadow-sm p-6 border flex flex-col gap-6 rounded-xl'>
+              <div className='flex items-center gap-2'>
+                <User className='text-gray-500 text-sm' />
+                <p>Identity & Location</p>
+              </div>
+
+              <div className='grid grid-cols-2 gap-4 text-sm'>
+                <div>
+                  <p className='text-gray-500'>Username</p>
+                  <p className='font-medium'>@{user?.userDetails.username}</p>
+                </div>
+                <div>
+                  <p className='text-gray-500'>Phone</p>
+                  <p className='font-medium'>{user?.userDetails.phone}</p>
+                </div>
+                <div>
+                  <p className='text-gray-500'>Twitter</p>
+                  <p className='font-medium'>{user?.userDetails.twitter}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className='shadow-sm p-6 border flex flex-col gap-6 rounded-xl'>
+              <div className='flex items-center gap-2'>
+                <Wallet className='text-gray-500 text-sm' />
+                <p>Financial Overview</p>
+              </div>
+
+              <div className='space-y-4'>
+                <div>
+                  <p className='text-sm text-gray-500 mb-1'>Connected Wallet</p>
+                  <div className='flex items-center justify-between rounded-md bg-gray-200 font-mono border p-2'>
                     {truncateAddress(user?.userDetails.walletAddress || '')}
-                  </span>
+                    <button onClick={copyAddress}>
+                      <Copy className='w-4 h-4' />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className='grid grid-cols-2 gap-4'>
+                <div>
+                  <p className='text-sm text-gray-500'>Total Invested</p>
+                  <p className='text-2xl font-bold'>${totalValue}</p>
+                </div>
+                <div>
+                  <p className='text-sm text-gray-500'>Properties</p>
+                  <p className='text-2xl font-bold'>
+                    {user?.holdings?.length || 0}
+                  </p>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
 
-        {/* Stats Cards */}
-        <div className='grid grid-cols-1 md:grid-cols-4 gap-4'>
-          <div className='bg-white rounded-lg shadow-sm p-6'>
-            <div className='flex items-center justify-between'>
-              <div>
-                <p className='text-sm text-gray-600 mb-1'>Total Holdings</p>
-                <p className='text-2xl font-bold text-gray-900'>
-                  {user?.holdings?.length || 0}
+        {view === 'Holdings & Portfolio' && (
+          <>
+            <div className='lg:col-span-2 flex flex-col gap-6 w-full bg-white p-6 rounded-xl shadow-sm border'>
+              <div className='mb-4'>
+                <p className='font-medium'>Property Holdings</p>
+                <p className='text-xs text-gray-500'>
+                  Detailed breakdown of all real estate tokens held by this user
                 </p>
               </div>
-              <Building2 className='w-8 h-8 text-blue-500' />
-            </div>
-          </div>
 
-          <div className='bg-white rounded-lg shadow-sm p-6'>
-            <div className='flex items-center justify-between'>
-              <div>
-                <p className='text-sm text-gray-600 mb-1'>Total Units</p>
-                <p className='text-2xl font-bold text-gray-900'>{totalValue}</p>
-              </div>
-              <DollarSign className='w-8 h-8 text-green-500' />
+              <DataTable
+                data={holdings}
+                columns={holdingsColumns}
+                pagination={pagination}
+                setPagination={setPagination}
+                hidePagination
+                pageCount={1}
+                totalItems={1}
+                isLoading={isLoading}
+                isError={isError}
+                isFetching={isFetching}
+                refetch={refetch}
+                // errorMessage={AppError.getServerErrorMessage(error)}
+              />
             </div>
-          </div>
+          </>
+        )}
 
-          {/* <div className='bg-white rounded-lg shadow-sm p-6'>
-            <div className='flex items-center justify-between'>
-              <div>
-                <p className='text-sm text-gray-600 mb-1'>Listed Units</p>
-                <p className='text-2xl font-bold text-gray-900'>
-                  {user?.ownership?.listedPositions?.reduce(
-                    (sum, pos) => sum + parseFloat(pos.units),
-                    0
-                  ) || 0}
+        {view === 'Transactions' && (
+          <>
+            <div className='lg:col-span-2 flex flex-col gap-6 w-full bg-white p-6 rounded-xl shadow-sm border'>
+              <div className='mb-4'>
+                <p className='font-medium'>Transactions</p>
+                <p className='text-xs text-gray-500'>
+                  Detailed breakdown of all transactions performed by this user
                 </p>
               </div>
-              <MapPin className='w-8 h-8 text-purple-500' />
+
+              <DataTable
+                data={transactions}
+                columns={transactionsColumns}
+                pagination={pagination}
+                setPagination={setPagination}
+                hidePagination
+                pageCount={1}
+                totalItems={1}
+                isLoading={isLoading}
+                isError={isError}
+                isFetching={isFetching}
+                refetch={refetch}
+                // errorMessage={AppError.getServerErrorMessage(error)}
+              />
             </div>
-          </div> */}
-
-          <div className='bg-white rounded-lg shadow-sm p-6'>
-            <div className='flex items-center justify-between'>
-              <div>
-                <p className='text-sm text-gray-600 mb-1'>Transactions</p>
-                <p className='text-2xl font-bold text-gray-900'>
-                  {user?.transactions?.length || 0}
-                </p>
-              </div>
-              <Clock className='w-8 h-8 text-orange-500' />
-            </div>
-          </div>
-        </div>
+          </>
+        )}
       </div>
-
-      <div className='my-5'>
-        <div className='flex items-center mb-5 justify-between'>
-          <h3>Holdings</h3>
-        </div>
-
-        <DataTable
-          data={holdings}
-          columns={holdingsColumns}
-          pagination={pagination}
-          setPagination={setPagination}
-          hidePagination
-          pageCount={1}
-          totalItems={1}
-          isLoading={isLoading}
-          isError={isError}
-          isFetching={isFetching}
-          refetch={refetch}
-          // errorMessage={AppError.getServerErrorMessage(error)}
-        />
-      </div>
-
-      <div className='my-5'>
-        <div className='flex items-center mb-5 justify-between'>
-          <h3>Transactions</h3>
-        </div>
-
-        <DataTable
-          data={transactions}
-          columns={transactionsColumns}
-          pagination={pagination}
-          setPagination={setPagination}
-          hidePagination
-          pageCount={1}
-          totalItems={1}
-          isLoading={isLoading}
-          isError={isError}
-          isFetching={isFetching}
-          refetch={refetch}
-          // errorMessage={AppError.getServerErrorMessage(error)}
-        />
-      </div>
-
-      {/* <div className='my-5'>
-        <div className='flex items-center mb-5 justify-between'>
-          <h3>Listed Positions</h3>
-        </div>
-
-        <DataTable
-          data={listings}
-          columns={listingsColumns}
-          pagination={pagination}
-          setPagination={setPagination}
-          hidePagination
-          pageCount={1}
-          totalItems={1}
-          isLoading={isLoading}
-          isError={isError}
-          isFetching={isFetching}
-          refetch={refetch}
-          // errorMessage={AppError.getServerErrorMessage(error)}
-        />
-      </div> */}
     </section>
   );
 }

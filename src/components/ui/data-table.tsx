@@ -77,7 +77,7 @@ export function DataTableSkeleton({
     <div
       className={cn(
         'w-full overflow-hidden bg-white rounded-md border',
-        className,
+        className
       )}
     >
       <table className='w-full border-collapse'>
@@ -131,7 +131,7 @@ function InternalDataTable<T>(props: Props<T>, ref?: Ref<DataTableRef>) {
       pageIndex: pagination.pageIndex,
       pageSize: pagination.pageSize,
     }),
-    [pagination.pageIndex, pagination.pageSize],
+    [pagination.pageIndex, pagination.pageSize]
   );
 
   useImperativeHandle(
@@ -141,7 +141,7 @@ function InternalDataTable<T>(props: Props<T>, ref?: Ref<DataTableRef>) {
         setPagination((p) => ({ ...p, pageIndex: 0 }));
       },
     }),
-    [setPagination],
+    [setPagination]
   );
 
   const table = useReactTable({
@@ -182,21 +182,21 @@ function InternalDataTable<T>(props: Props<T>, ref?: Ref<DataTableRef>) {
     );
   } else if (!isLoading && !isError && data.length > 0) {
     content = (
-      <>
-        <Table className={cn('whitespace-nowrap overflow-hidden  bg-white')}>
+      <div className='rounded-md border  overflow-x-auto w-full'>
+        <Table className={cn('whitespace-nowrap overflow-hidden bg-white')}>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className=''>
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
-                    className='text-[14px] text-[#10121299] leading-5 tracking-[-0.15px] border-b border-b-[#F5F5F5] py-2 px-4'
+                    className='text-[14px] leading-5 tracking-[-0.15px] border-b border-b-[#F5F5F5] h-10 font-medium px-4'
                   >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
-                          header.getContext(),
+                          header.getContext()
                         )}
                   </TableHead>
                 ))}
@@ -216,7 +216,7 @@ function InternalDataTable<T>(props: Props<T>, ref?: Ref<DataTableRef>) {
                 {row.getVisibleCells().map((cell) => (
                   <TableCell
                     key={cell.id}
-                    className='font-medium text-[14px] text-[#231F20] leading-6 tracking-[-0.24px] py-[14px] px-4 border-b border-b-[#F5F5F5] '
+                    className='text-[14px] text-[#231F20] leading-6 tracking-[-0.24px] py-2 px-4 border-b'
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
@@ -225,37 +225,39 @@ function InternalDataTable<T>(props: Props<T>, ref?: Ref<DataTableRef>) {
             ))}
           </TableBody>
         </Table>
-      </>
+      </div>
     );
   }
 
   return (
     <div
       className={cn(
-        'w-full flex flex-col justify-start items-start gap-6 overflow-x-auto bg-white',
-        className,
+        'w-full flex flex-col justify-start items-start gap-6 bg-white',
+        className
       )}
     >
       {content}
 
       {!hidePagination && (
-        <Paginator
-          page={pagination.pageIndex}
-          pageSize={pagination.pageSize}
-          totalPages={props.pageCount}
-          totalItems={props.totalItems}
-          setPage={table.setPageIndex}
-          canNext={table.getCanNextPage()}
-          canPrev={table.getCanPreviousPage()}
-          hidePageNumbers
-        />
+        <div className='flex justify-end w-full'>
+          <Paginator
+            page={pagination.pageIndex}
+            pageSize={pagination.pageSize}
+            totalPages={props.pageCount}
+            totalItems={props.totalItems}
+            setPage={table.setPageIndex}
+            canNext={table.getCanNextPage()}
+            canPrev={table.getCanPreviousPage()}
+            hidePageNumbers
+          />
+        </div>
       )}
     </div>
   );
 }
 
 export const DataTable = forwardRef(InternalDataTable) as <T>(
-  props: Props<T> & { ref?: Ref<DataTableRef> },
+  props: Props<T> & { ref?: Ref<DataTableRef> }
 ) => ReactNode;
 
 type DataTableDropdownActionProps = {
@@ -282,7 +284,7 @@ export function DataTableDropdownAction({
             >
               {ac.label}
             </DropdownMenuItem>
-          ),
+          )
         )}
       </DropdownMenuContent>
     </DropdownMenu>
