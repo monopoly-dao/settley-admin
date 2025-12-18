@@ -23,7 +23,7 @@ const usersApi = globalApi.injectEndpoints({
 
     getUsers: build.query<
       PaginatedSuccessResponse<UserResponse[]>,
-      { page?: number; limit?: number; search?: string }
+      { page?: number; limit?: number; search?: string; sortBy?: string; sortDirection?: string }
     >({
       query: (payload) => ({
         url: UsersEndpoints.Get_Users,

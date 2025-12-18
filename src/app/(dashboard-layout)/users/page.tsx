@@ -4,6 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 
 import Button from '@/components/buttons/Button';
+import Dropdown from '@/components/dropdown';
 import { InputSearch } from '@/components/input';
 import { DataTable } from '@/components/ui';
 
@@ -19,6 +20,8 @@ export default function Page() {
   });
   const searchParams = useSearchParams();
   const search = searchParams.get('search');
+  const sortDirection = searchParams.get('sortDirection');
+  const sortBy = searchParams.get('sortBy');
 
   const {
     data: res,
@@ -30,6 +33,8 @@ export default function Page() {
     limit: pagination.pageSize,
     page: pagination.pageIndex + 1,
     ...(search && { search }),
+    ...(sortDirection && { sortDirection }),
+    ...(sortBy && { sortBy }),
   });
 
   return (
@@ -55,11 +60,33 @@ export default function Page() {
           </Button>
         </div>
 
-        <div className='mt-3 mb-2 flex flex-col md:flex-row gap-1 md:gap-4'>
+        <div className='mt-3 mb-2 flex flex-col md:flex-row gap-1 md:gap-4 justify-between'>
           <InputSearch
             inputClassName='py-1'
             placeholder='Search for user name, wallet address'
           />
+
+          <div className='flex items-center gap-5'>
+            <Dropdown
+              paramKey='sortDirection'
+              label='Sort Direction'
+              options={[
+                { label: 'Highest to Lowest', value: 'desc' },
+                { label: 'Lowest to Highest', value: 'asc' },
+              ]}
+              defaultLabel='Sort Direction'
+            />
+
+            <Dropdown
+              paramKey='sortBy'
+              label='Sort By'
+              options={[
+                { label: 'Properties Owned', value: 'propertiesOwned' },
+                { label: 'Amount Invested', value: 'amountInvested' },
+              ]}
+              defaultLabel='Sort By'
+            />
+          </div>
         </div>
 
         <DataTable
