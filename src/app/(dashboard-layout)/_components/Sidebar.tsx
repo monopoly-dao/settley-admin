@@ -4,6 +4,7 @@ import { LucideIcon } from 'lucide-react';
 import { IconType } from 'react-icons';
 import { FaUserCircle } from 'react-icons/fa';
 import { IoWalletOutline } from 'react-icons/io5';
+import { PiNotepadBold } from 'react-icons/pi';
 import { RiHome6Fill } from 'react-icons/ri';
 
 import { cn } from '@/lib/utils';
@@ -70,6 +71,13 @@ const sideBarLinks: SidebarLinksType[] = [
     icon: FaUserCircle,
     title: 'Users',
     href: '/users',
+    available: true,
+  },
+  {
+    id: 6,
+    icon: PiNotepadBold,
+    title: 'Articles',
+    href: '/articles',
     available: true,
   },
 ];

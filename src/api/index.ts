@@ -108,6 +108,7 @@ export const globalApi = createApi({
     'CampaignPayments',
     'Users',
     'Dashboard',
+    'Articles',
   ],
 });
 
