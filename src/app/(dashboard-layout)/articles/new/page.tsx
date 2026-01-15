@@ -104,6 +104,35 @@ export default function Page() {
     }
   };
 
+  const modules = {
+    toolbar: [
+      [{ header: [1, 2, 3, 4, 5, false] }],
+      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+      [
+        { list: 'ordered' },
+        { list: 'bullet' },
+        { indent: '-1' },
+        { indent: '+1' },
+      ],
+      ['link', 'image'],
+      ['clean'],
+    ],
+  };
+
+  const formats = [
+    'header',
+    'bold',
+    'italic',
+    'underline',
+    'strike',
+    'blockquote',
+    'list',
+    'bullet',
+    'indent',
+    'link',
+    'image',
+  ];
+
   return (
     <section className='h-full overflow-y-auto px-[5%] lg:px-10 xl:px-20'>
       <h1 className='text-3xl font-serif tracking-tight font-bold text-gray-900 mb-6 mt-4 lg:mt-0'>
@@ -188,7 +217,13 @@ export default function Page() {
               Content
             </label>
 
-            <ReactQuill value={value} onChange={setValue} />
+            <ReactQuill
+              theme='snow'
+              value={value}
+              onChange={setValue}
+              modules={modules}
+              formats={formats}
+            />
           </div>
 
           <div className='flex items-center gap-3'>
