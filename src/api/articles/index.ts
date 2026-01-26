@@ -45,18 +45,14 @@ const articleApi = globalApi.injectEndpoints({
     updateArticle: build.mutation<
       void,
       {
-        payload: {
-          title: string;
-          content: string;
-          status: string;
-        };
+        payload: FormData;
         articleId: string;
       }
     >({
-      query: ({ articleId, ...data }) => ({
+      query: ({ articleId, payload }) => ({
         url: ArticlesEndpoints.UpdateArticle.replace(':id', articleId),
         method: 'PUT',
-        data,
+        data: payload,
       }),
       invalidatesTags: ['Articles'],
     }),

@@ -5,4 +5,5 @@ export type ArticleResponse = {
   status: 'published' | 'draft';
   createdAt: string;
   updatedAt: string;
+  coverImage: string;
 };
