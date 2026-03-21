@@ -18,7 +18,7 @@ import {
 
 // TODO: convert hardcoded base urls to env;
 export const AUTH_BASE_URL = 'https://settley-auth.fly.dev';
-export const BASE_URL = 'https://settley.fly.dev';
+export const BASE_URL = 'http://localhost:8000'; //'https://settley.fly.dev';
 // 'http://localhost:8000';
 // 'https://settley.fly.dev';
 // https://settley-auth.fly.dev
@@ -42,54 +42,54 @@ const axiosBaseQuery =
     unknown,
     unknown
   > =>
-    async (args, _api, _extraOptions) => {
-      let session: Session | null = null;
-      const { url, method, data, params } = args;
+  async (args, _api, _extraOptions) => {
+    let session: Session | null = null;
+    const { url, method, data, params } = args;
 
-      try {
-        session = await getSession();
-        const token = session && session.token;
-        // if (!session) {
-        //   signOut();
-        // }
-        const result = await axios({
-          url: url,
-          method,
-          data,
-          params,
-          baseURL: baseUrl,
-          headers: {
-            Authorization: `Bearer ${token}`,
-            firebaseid: session?.userFirebaseId,
-          },
-          timeout: AXIOS_TIMEOUT_TIME,
-          timeoutErrorMessage: AXIOS_TIMEOUT_MSG,
-        });
+    try {
+      session = await getSession();
+      const token = session && session.token;
+      // if (!session) {
+      //   signOut();
+      // }
+      const result = await axios({
+        url: url,
+        method,
+        data,
+        params,
+        baseURL: baseUrl,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          firebaseid: session?.userFirebaseId,
+        },
+        timeout: AXIOS_TIMEOUT_TIME,
+        timeoutErrorMessage: AXIOS_TIMEOUT_MSG,
+      });
 
-        return { data: result?.data ? result.data : null };
-      } catch (axiosError) {
-        const err = axiosError as AxiosError;
+      return { data: result?.data ? result.data : null };
+    } catch (axiosError) {
+      const err = axiosError as AxiosError;
 
-        if (
-          err?.response?.data &&
-          typeof err.response.data === 'object' &&
-          err.response.data &&
-          'message' in err.response.data &&
-          typeof err.response.data.message === 'string' &&
-          err?.response?.data?.message === 'Unauthorized request'
-        ) {
-          toast.error('Session expired. Please login again');
-          signOut();
-        }
-
-        return {
-          error: {
-            status: err.response?.status,
-            data: err.response?.data || err.message,
-          },
-        };
+      if (
+        err?.response?.data &&
+        typeof err.response.data === 'object' &&
+        err.response.data &&
+        'message' in err.response.data &&
+        typeof err.response.data.message === 'string' &&
+        err?.response?.data?.message === 'Unauthorized request'
+      ) {
+        toast.error('Session expired. Please login again');
+        signOut();
       }
-    };
+
+      return {
+        error: {
+          status: err.response?.status,
+          data: err.response?.data || err.message,
+        },
+      };
+    }
+  };
 
 export const globalApi = createApi({
   baseQuery: axiosBaseQuery({
@@ -109,6 +109,7 @@ export const globalApi = createApi({
     'Users',
     'Dashboard',
     'Articles',
+    'Applications',
   ],
 });
 
