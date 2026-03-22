@@ -7,7 +7,11 @@ import React from 'react';
 import toast from 'react-hot-toast';
 import {
   FaArrowLeft,
+  FaEye,
+  FaFile,
   FaFileAlt,
+  FaFileImage,
+  FaFilePdf,
   FaHistory,
   FaHome,
   FaUser,
@@ -20,6 +24,7 @@ import {
 import {
   AdminApplicationDetail,
   ApplicationStatus,
+  Document,
   isValidApplicationStatus,
 } from '@/api/applications/applicationsApiTypes';
 
@@ -95,8 +100,19 @@ export default function ApplicationDetailPage() {
     }
   };
 
+  const getFileIcon = (doc: Document) => {
+    const url = (doc.url || '').toLowerCase();
+    if (url.endsWith('.pdf')) {
+      return <FaFilePdf className='text-red-500 text-lg flex-shrink-0' />;
+    }
+    if (/\.(jpg|jpeg|png|gif|webp)$/.test(url)) {
+      return <FaFileImage className='text-blue-500 text-lg flex-shrink-0' />;
+    }
+    return <FaFile className='text-gray-500 text-lg flex-shrink-0' />;
+  };
+
   return (
-    <div className='space-y-8 pb-20'>
+    <div className='space-y-8 pb-20 overflow-y-auto h-full'>
       {/* Header */}
       <div className='flex items-center gap-4'>
         <Link
@@ -322,10 +338,18 @@ export default function ApplicationDetailPage() {
             <div className='space-y-3'>
               {application.documents.map((doc, idx) => (
                 <div key={idx} className='space-y-2'>
-                  <div className='flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-100'>
-                    <span className='text-sm font-medium text-navy'>
+                  <div className='flex items-center gap-3 p-3 rounded-lg bg-slate-50 border border-slate-100'>
+                    {getFileIcon(doc)}
+                    <a
+                      href={doc.url}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      className='flex-1 text-sm font-medium text-navy hover:text-settley-primary flex items-center gap-2 truncate'
+                      title={doc.name}
+                    >
                       {doc.name}
-                    </span>
+                      <FaEye className='text-xs flex-shrink-0' />
+                    </a>
                     <span
                       className={`font-bold text-[10px] uppercase ${
                         doc.status === 'approved'

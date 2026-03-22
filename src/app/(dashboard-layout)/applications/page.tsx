@@ -74,7 +74,7 @@ export default function AdminApplicationsPage() {
   }
 
   return (
-    <div className='p-8'>
+    <div className='p-8 overflow-y-auto h-full'>
       {/* Header */}
       <div className='mb-8'>
         <h1 className='text-3xl font-bold text-navy mb-2'>Applications</h1>
