@@ -1,18 +1,14 @@
-import { useSearchParams } from 'next/navigation';
-
-import TableContainer from '@/components/table';
-
 // import { useGetUserAssetsQuery } from '@/api/profile';
 
 // import AssetTableItem from './AssetTableItem';
 
-const headers = ['Token', 'Amount', 'USD Value'];
+// const headers = ['Token', 'Amount', 'USD Value'];
 
-type Props = {
-  userFirebaseId: string;
-};
+// type Props = {
+//   userFirebaseId: string;
+// };
 
-export default function AssetsSection({ userFirebaseId }: Props) {
+export default function AssetsSection() {
   // const searchParams = useSearchParams();
   // const page = Number(searchParams.get('page')) || 1;
 

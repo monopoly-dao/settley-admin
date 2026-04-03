@@ -6,7 +6,6 @@ import {
   Roboto,
 } from 'next/font/google';
 import localFont from 'next/font/local';
-import Script from 'next/script';
 import { getServerSession } from 'next-auth';
 import NextTopLoader from 'nextjs-toploader';
 import { Toaster } from 'react-hot-toast';

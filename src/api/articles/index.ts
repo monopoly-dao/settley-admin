@@ -33,24 +33,24 @@ const articleApi = globalApi.injectEndpoints({
 
     getArticle: build.query<
       INetworkSuccessResponse<ArticleResponse>,
-      { articleId: string }
+      { slug: string }
     >({
-      query: ({ articleId }) => ({
-        url: ArticlesEndpoints.GetArticle.replace(':id', articleId),
+      query: ({ slug }) => ({
+        url: ArticlesEndpoints.GetArticle.replace(':slug', slug),
         method: 'GET',
       }),
-      providesTags: (_r, _e, arg) => [{ type: 'Articles', id: arg.articleId }],
+      providesTags: (_r, _e, arg) => [{ type: 'Articles', id: arg.slug }],
     }),
 
     updateArticle: build.mutation<
       void,
       {
         payload: FormData;
-        articleId: string;
+        slug: string;
       }
     >({
-      query: ({ articleId, payload }) => ({
-        url: ArticlesEndpoints.UpdateArticle.replace(':id', articleId),
+      query: ({ slug, payload }) => ({
+        url: ArticlesEndpoints.UpdateArticle.replace(':slug', slug),
         method: 'PUT',
         data: payload,
       }),
@@ -60,11 +60,11 @@ const articleApi = globalApi.injectEndpoints({
     deleteArticle: build.mutation<
       void,
       {
-        articleId: string;
+        slug: string;
       }
     >({
-      query: ({ articleId }) => ({
-        url: ArticlesEndpoints.DeleteArticle.replace(':id', articleId),
+      query: ({ slug }) => ({
+        url: ArticlesEndpoints.DeleteArticle.replace(':slug', slug),
         method: 'DELETE',
       }),
       invalidatesTags: ['Articles'],

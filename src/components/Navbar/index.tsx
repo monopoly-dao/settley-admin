@@ -76,7 +76,7 @@ const Navbar = () => {
 
   const router = useRouter();
 
-  const userFirebaseId = session.data?.userFirebaseId ?? '';
+  // const userFirebaseId = session.data?.userFirebaseId ?? '';
 
   const { data: userResponse, isLoading } = useGetUserDetailsQuery();
   const userDetails = userResponse?.data.userDetails;

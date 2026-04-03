@@ -31,7 +31,7 @@ export default function Page() {
   const deleteModal = useDisclosure();
 
   const [deleteArticle, { isLoading: isDeleting }] = useDeleteArticleMutation();
-  const [selectedArticleId, setSelectedArticleId] = useState<string | null>(
+  const [selectedSlug, setSelectedSlug] = useState<string | null>(
     null
   );
 
@@ -43,19 +43,19 @@ export default function Page() {
   } = useGetArticlesQuery({ page, limit });
   // const articles = res?.data || [];
 
-  function onDelete(id: string) {
-    setSelectedArticleId(id);
+  function onDelete(slug: string) {
+    setSelectedSlug(slug);
     deleteModal.open();
   }
 
   function closeDeleteModal() {
-    setSelectedArticleId(null);
+    setSelectedSlug(null);
     deleteModal.close();
   }
 
-  async function handleConfirmDelete(id: string) {
+  async function handleConfirmDelete(slug: string) {
     try {
-      await deleteArticle({ articleId: id }).unwrap();
+      await deleteArticle({ slug }).unwrap();
       toast.success('Article deleted');
     } catch (e) {
       handleErrors(e);
@@ -123,7 +123,7 @@ export default function Page() {
         isOpen={deleteModal.isOpen}
         handleCloseModal={deleteModal.close}
         handleOpenModal={deleteModal.open}
-        articleId={selectedArticleId}
+        slug={selectedSlug}
         onConfirm={handleConfirmDelete}
         isLoading={isDeleting}
       />

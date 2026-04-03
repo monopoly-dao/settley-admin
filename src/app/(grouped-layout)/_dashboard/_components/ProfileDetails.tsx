@@ -1,7 +1,5 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
-
 import Button from '@/components/buttons/Button';
 import LoadingText from '@/components/LoadingText';
 

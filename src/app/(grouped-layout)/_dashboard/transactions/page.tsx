@@ -1,33 +1,28 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
-import { useSession } from 'next-auth/react';
 import toast from 'react-hot-toast';
 import { MdContentCopy } from 'react-icons/md';
 
 import LoadingText from '@/components/LoadingText';
-import TableContainer from '@/components/table';
 
 import { useGetUserDetailsQuery } from '@/api/profile';
 import { handleErrors } from '@/utils/error';
 
-import TransactionTableItem from '../_components/TransactionTableItem';
-
-const headers = [
-  'Transaction Hash',
-  'Asset Symbol',
-  'Date',
-  'Price',
-  'Quantity',
-  'Status',
-];
+// const headers = [
+//   'Transaction Hash',
+//   'Asset Symbol',
+//   'Date',
+//   'Price',
+//   'Quantity',
+//   'Status',
+// ];
 
 export default function Page() {
-  const searchParams = useSearchParams();
-  const page = Number(searchParams.get('page')) || 1;
+  // const searchParams = useSearchParams();
+  // const page = Number(searchParams.get('page')) || 1;
 
-  const session = useSession();
-  const userFirebaseId = session.data?.userFirebaseId ?? '';
+  // const session = useSession();
+  // const userFirebaseId = session.data?.userFirebaseId ?? '';
 
   const { data: userDetailsResponse, isLoading: isUserLoading } =
     useGetUserDetailsQuery();

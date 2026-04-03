@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { RiCloseLine, RiUpload2Line } from 'react-icons/ri';
 
 import Button from '@/components/buttons/Button';
@@ -12,43 +12,104 @@ import toast from 'react-hot-toast';
 
 import 'react-quill/dist/quill.snow.css';
 
-import { useCreateArticleMutation } from '@/api/articles';
+import { useGetArticleQuery, useUpdateArticleMutation } from '@/api/articles';
 import { handleErrors } from '@/utils/error';
 
-export default function Page() {
+export default function Page({ params }: { params: { slug: string } }) {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [formData, setFormData] = useState({
-    title: '',
-    metaDescription: '',
-    author: '',
-    excerpt: '',
-    tags: '',
-    published: false,
-  });
-  const [loading, setLoading] = useState(false);
-  const [coverImage, setCoverImage] = useState<string | null>(null);
+
+  const { data: articleData, isLoading: isLoadingArticle } = useGetArticleQuery(
+    {
+      slug: params.slug,
+    }
+  );
+
+  const [updateArticle, { isLoading }] = useUpdateArticleMutation();
+
+  // Derive initial values from query data
+  const initialTitle = useMemo(
+    () => articleData?.data?.title || '',
+    [articleData]
+  );
+  const initialContent = useMemo(
+    () => articleData?.data?.content || '',
+    [articleData]
+  );
+  const initialPublished = useMemo(
+    () => articleData?.data?.status === 'published',
+    [articleData]
+  );
+  const initialCoverImage = useMemo(
+    () => articleData?.data?.coverImage || null,
+    [articleData]
+  );
+  const initialMetaDescription = useMemo(
+    () => articleData?.data?.metaDescription || '',
+    [articleData]
+  );
+  const initialAuthor = useMemo(
+    () => articleData?.data?.author || '',
+    [articleData]
+  );
+  const initialExcerpt = useMemo(
+    () => articleData?.data?.excerpt || '',
+    [articleData]
+  );
+  const initialTags = useMemo(
+    () => articleData?.data?.tags?.join(', ') || '',
+    [articleData]
+  );
+
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [metaDescription, setMetaDescription] = useState('');
+  const [author, setAuthor] = useState('');
+  const [excerpt, setExcerpt] = useState('');
+  const [tags, setTags] = useState('');
+  const [published, setPublished] = useState(false);
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
+  const [newCoverImagePreview, setNewCoverImagePreview] = useState<
+    string | null
+  >(null);
 
-  const [value, setValue] = useState('');
-  const [createArticle, { isLoading }] = useCreateArticleMutation();
+  // Use initial values or current state (allows editing while preserving initial load)
+  const currentTitle = title || initialTitle;
+  const currentContent = content || initialContent;
+  const currentMetaDescription = metaDescription || initialMetaDescription;
+  const currentAuthor = author || initialAuthor;
+  const currentExcerpt = excerpt || initialExcerpt;
+  const currentTags = tags || initialTags;
+  const currentPublished = title ? published : initialPublished;
+  // Show new preview if user selected a file, otherwise show existing cover image
+  const displayCoverImage = newCoverImagePreview || initialCoverImage;
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value);
+  };
+
+  const handleMetaDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setMetaDescription(e.target.value);
+  };
+
+  const handleAuthorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setAuthor(e.target.value);
+  };
+
+  const handleExcerptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setExcerpt(e.target.value);
+  };
+
+  const handleTagsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTags(e.target.value);
   };
 
   const handlePublishChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prev) => ({
-      ...prev,
-      published: e.target.checked,
-    }));
+    setPublished(e.target.checked);
+    console.log(published, e.target.checked);
   };
+
+  console.log(published, currentPublished);
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -71,13 +132,13 @@ export default function Page() {
     // Create preview
     const reader = new FileReader();
     reader.onloadend = () => {
-      setCoverImage(reader.result as string);
+      setNewCoverImagePreview(reader.result as string);
     };
     reader.readAsDataURL(file);
   };
 
   const removeCoverImage = () => {
-    setCoverImage(null);
+    setNewCoverImagePreview(null);
     setCoverImageFile(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
@@ -86,28 +147,30 @@ export default function Page() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    if (!formData.title.trim())
+    if (!currentTitle.trim())
       return toast.error('Please provide article title');
-    if (!value.trim()) return toast.error('Please provide article content');
+    if (!currentContent.trim())
+      return toast.error('Please provide article content');
 
     const form = new FormData();
-    form.set('title', formData.title);
-    form.set('content', value);
-    if (coverImageFile) form.set('cover', coverImageFile);
-    form.set('status', formData.published ? 'published' : 'draft');
-    if (formData.metaDescription.trim()) {
-      form.set('metaDescription', formData.metaDescription);
+    form.set('title', currentTitle);
+    form.set('content', currentContent);
+    if (coverImageFile) {
+      form.set('cover', coverImageFile);
     }
-    if (formData.author.trim()) {
-      form.set('author', formData.author);
+    form.set('status', published ? 'published' : 'draft');
+    if (currentMetaDescription.trim()) {
+      form.set('metaDescription', currentMetaDescription);
     }
-    if (formData.excerpt.trim()) {
-      form.set('excerpt', formData.excerpt);
+    if (currentAuthor.trim()) {
+      form.set('author', currentAuthor);
     }
-    if (formData.tags.trim()) {
+    if (currentExcerpt.trim()) {
+      form.set('excerpt', currentExcerpt);
+    }
+    if (currentTags.trim()) {
       // Convert comma-separated string to array
-      const tagsArray = formData.tags
+      const tagsArray = currentTags
         .split(',')
         .map(tag => tag.trim())
         .filter(tag => tag.length > 0);
@@ -117,8 +180,12 @@ export default function Page() {
     }
 
     try {
-      await createArticle(form).unwrap();
+      await updateArticle({
+        slug: params.slug,
+        payload: form as any,
+      }).unwrap();
 
+      toast.success('Article updated successfully');
       setTimeout(() => {
         router.push('/articles');
       }, 1500);
@@ -156,10 +223,20 @@ export default function Page() {
     'image',
   ];
 
+  if (isLoadingArticle) {
+    return (
+      <section className='h-full overflow-y-auto px-[5%] lg:px-10 xl:px-20'>
+        <div className='flex items-center justify-center h-full'>
+          <p className='text-gray-500'>Loading article...</p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className='h-full overflow-y-auto px-[5%] lg:px-10 xl:px-20'>
       <h1 className='text-3xl font-serif tracking-tight font-bold text-gray-900 mb-6 mt-4 lg:mt-0'>
-        Create Article
+        Edit Article
       </h1>
 
       <div className='max-w-2xl bg-white p-6 rounded-xl shadow-sm border'>
@@ -175,8 +252,8 @@ export default function Page() {
               type='text'
               id='title'
               name='title'
-              value={formData.title}
-              onChange={handleChange}
+              value={currentTitle}
+              onChange={handleTitleChange}
               placeholder='Enter article title'
               required
               className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy'
@@ -188,11 +265,11 @@ export default function Page() {
               Cover Image
             </label>
 
-            {coverImage ? (
+            {displayCoverImage ? (
               <div className='relative group'>
                 <div className='relative w-full h-48 rounded-lg overflow-hidden bg-gray-100 border border-gray-300'>
                   <Image
-                    src={coverImage}
+                    src={displayCoverImage}
                     alt='Cover preview'
                     fill
                     className='object-cover'
@@ -242,8 +319,8 @@ export default function Page() {
 
             <ReactQuill
               theme='snow'
-              value={value}
-              onChange={setValue}
+              value={currentContent}
+              onChange={setContent}
               modules={modules}
               formats={formats}
             />
@@ -259,8 +336,8 @@ export default function Page() {
             <textarea
               id='excerpt'
               name='excerpt'
-              value={formData.excerpt}
-              onChange={handleChange}
+              value={currentExcerpt}
+              onChange={handleExcerptChange}
               placeholder='Brief 1-2 line summary'
               rows={2}
               className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy'
@@ -278,8 +355,8 @@ export default function Page() {
               type='text'
               id='author'
               name='author'
-              value={formData.author}
-              onChange={handleChange}
+              value={currentAuthor}
+              onChange={handleAuthorChange}
               placeholder='e.g., Mira, Cofounder & CGG, Settley'
               className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy'
             />
@@ -295,8 +372,8 @@ export default function Page() {
             <textarea
               id='metaDescription'
               name='metaDescription'
-              value={formData.metaDescription}
-              onChange={handleChange}
+              value={currentMetaDescription}
+              onChange={handleMetaDescriptionChange}
               placeholder='SEO description (max 160 characters recommended)'
               rows={2}
               className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy'
@@ -314,13 +391,13 @@ export default function Page() {
               type='text'
               id='tags'
               name='tags'
-              value={formData.tags}
-              onChange={handleChange}
+              value={currentTags}
+              onChange={handleTagsChange}
               placeholder='e.g., real-estate, investing, property'
               className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy'
             />
             <p className='text-xs text-gray-500 mt-1'>
-              Separate tags with commas. They will be converted to an array.
+              Separate tags with commas.
             </p>
           </div>
 
@@ -329,13 +406,13 @@ export default function Page() {
               type='checkbox'
               id='published'
               name='published'
-              checked={formData.published}
+              checked={published}
               onChange={handlePublishChange}
               className='w-4 h-4 rounded border-gray-300'
             />
             <label
               htmlFor='published'
-              className='text-sm font-medium text-gray-700'
+              className='text-sm font-medium text-gray-700 cursor-pointer'
             >
               Publish immediately
             </label>
@@ -348,7 +425,7 @@ export default function Page() {
               disabled={isLoading}
               className='!py-2 px-4'
             >
-              {loading ? 'Creating...' : 'Create Article'}
+              {isLoading ? 'Updating...' : 'Update Article'}
             </Button>
             <Button
               type='button'

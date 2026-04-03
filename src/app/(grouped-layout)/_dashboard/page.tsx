@@ -1,19 +1,11 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
-import { FiKey } from 'react-icons/fi';
-import { GoHome } from 'react-icons/go';
-import { IoWalletOutline } from 'react-icons/io5';
-
 // import { useGetWalletStatsQuery } from '@/api/profile';
-
 import AssetsSection from './_components/AssetsSection';
-import DashboardCard from './_components/DashboardCard';
-import ExploreOpportunities from './_components/ExploreOpportunites';
 
 export default function Page() {
-  const session = useSession();
-  const userFirebaseId = session.data?.userFirebaseId ?? '';
+  // const session = useSession();
+  // const userFirebaseId = session.data?.userFirebaseId ?? '';
 
   // const { data: walletStatsResponse, isLoading } =
   //   useGetWalletStatsQuery(userFirebaseId);
@@ -57,7 +49,7 @@ export default function Page() {
         )} */}
 
       <div className='mt-20'>
-        <AssetsSection userFirebaseId={userFirebaseId} />
+        <AssetsSection />
       </div>
 
       {/* <div className='mt-20'>
