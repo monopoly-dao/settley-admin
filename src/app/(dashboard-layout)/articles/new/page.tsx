@@ -11,9 +11,13 @@ import dynamic from 'next/dynamic';
 import toast from 'react-hot-toast';
 
 import 'react-quill/dist/quill.snow.css';
+import '@uiw/react-md-editor/markdown-editor.css';
+import '@uiw/react-markdown-preview/markdown.css';
 
 import { useCreateArticleMutation } from '@/api/articles';
 import { handleErrors } from '@/utils/error';
+
+const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false });
 
 export default function Page() {
   const router = useRouter();
@@ -109,8 +113,8 @@ export default function Page() {
       // Convert comma-separated string to array
       const tagsArray = formData.tags
         .split(',')
-        .map(tag => tag.trim())
-        .filter(tag => tag.length > 0);
+        .map((tag) => tag.trim())
+        .filter((tag) => tag.length > 0);
       if (tagsArray.length > 0) {
         form.set('tags', JSON.stringify(tagsArray));
       }
@@ -127,34 +131,34 @@ export default function Page() {
     }
   };
 
-  const modules = {
-    toolbar: [
-      [{ header: [1, 2, 3, 4, 5, false] }],
-      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-      [
-        { list: 'ordered' },
-        { list: 'bullet' },
-        { indent: '-1' },
-        { indent: '+1' },
-      ],
-      ['link', 'image'],
-      ['clean'],
-    ],
-  };
+  // const modules = {
+  //   toolbar: [
+  //     [{ header: [1, 2, 3, 4, 5, false] }],
+  //     ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+  //     [
+  //       { list: 'ordered' },
+  //       { list: 'bullet' },
+  //       { indent: '-1' },
+  //       { indent: '+1' },
+  //     ],
+  //     ['link', 'image'],
+  //     ['clean'],
+  //   ],
+  // };
 
-  const formats = [
-    'header',
-    'bold',
-    'italic',
-    'underline',
-    'strike',
-    'blockquote',
-    'list',
-    'bullet',
-    'indent',
-    'link',
-    'image',
-  ];
+  // const formats = [
+  //   'header',
+  //   'bold',
+  //   'italic',
+  //   'underline',
+  //   'strike',
+  //   'blockquote',
+  //   'list',
+  //   'bullet',
+  //   'indent',
+  //   'link',
+  //   'image',
+  // ];
 
   return (
     <section className='h-full overflow-y-auto px-[5%] lg:px-10 xl:px-20'>
@@ -240,12 +244,17 @@ export default function Page() {
               Content
             </label>
 
-            <ReactQuill
+            {/* <ReactQuill
               theme='snow'
               value={value}
               onChange={setValue}
               modules={modules}
               formats={formats}
+            /> */}
+
+            <MDEditor
+              value={value}
+              onChange={(value) => setValue(value || '')}
             />
           </div>
 

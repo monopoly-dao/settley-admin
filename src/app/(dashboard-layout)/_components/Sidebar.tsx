@@ -74,14 +74,14 @@ const sideBarLinks: SidebarLinksType[] = [
     available: true,
   },
   {
-    id: 2,
+    id: 4,
     icon: IoWalletOutline,
     title: 'Applications',
     href: '/applications',
     available: false,
   },
   {
-    id: 6,
+    id: 7,
     icon: PiNotepadBold,
     title: 'Articles',
     href: '/articles',

@@ -10,8 +10,10 @@ const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 import dynamic from 'next/dynamic';
 import toast from 'react-hot-toast';
 
-import 'react-quill/dist/quill.snow.css';
+import '@uiw/react-md-editor/markdown-editor.css';
+import '@uiw/react-markdown-preview/markdown.css';
 
+const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false });
 import { useGetArticleQuery, useUpdateArticleMutation } from '@/api/articles';
 import { handleErrors } from '@/utils/error';
 
@@ -88,7 +90,9 @@ export default function Page({ params }: { params: { slug: string } }) {
     setTitle(e.target.value);
   };
 
-  const handleMetaDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleMetaDescriptionChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
     setMetaDescription(e.target.value);
   };
 
@@ -172,8 +176,8 @@ export default function Page({ params }: { params: { slug: string } }) {
       // Convert comma-separated string to array
       const tagsArray = currentTags
         .split(',')
-        .map(tag => tag.trim())
-        .filter(tag => tag.length > 0);
+        .map((tag) => tag.trim())
+        .filter((tag) => tag.length > 0);
       if (tagsArray.length > 0) {
         form.set('tags', JSON.stringify(tagsArray));
       }
@@ -317,12 +321,17 @@ export default function Page({ params }: { params: { slug: string } }) {
               Content
             </label>
 
-            <ReactQuill
+            {/* <ReactQuill
               theme='snow'
               value={currentContent}
               onChange={setContent}
               modules={modules}
               formats={formats}
+            /> */}
+
+            <MDEditor
+              value={currentContent}
+              onChange={(value) => setContent(value || '')}
             />
           </div>
 
